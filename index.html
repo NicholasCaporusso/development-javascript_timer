@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<link rel="stylesheet" href="bootstrap.min.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<style>
+		.form-control{
+			text-align:center;
+			font-size:300%;
+			border:none;
+		}
+		</style>
+	</head>
+<body>
+<div class="container">
+	<div class="row">
+		<div class="col-4 text-center">
+			<h1>Hours</h1>
+			<input id="hours" class="form-control" placeholder="0" />
+		</div>
+		<div class="col-4 text-center">
+			<h1>Minutes</h1>
+			<input id="minutes" class="form-control" placeholder="0" />
+		</div>
+		<div class="col-4 text-center">
+			<h1>Seconds</h1>
+			<input id="seconds" class="form-control" placeholder="0" />
+		</div>
+	</div>
+	<br />
+	<div class="row">
+		<div class="col-12 text-center">
+			<button id="start-stop" class="btn btn-primary btn-lg">Start</button>
+		</div>
+	</div>
+	<br />
+	<div id="alert" class="alert alert-danger" role="alert" style="display:none"><h1>Expired</h1></div>
+</div>
+ <script src="jquery-3.2.1.slim.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+  
+<script>
+var started=false;
+var countDownDate;
+var interval;
+
+$(document).on('click','#start-stop',function(){
+	if(started) stop();
+	else{
+		$('#alert').hide();
+		started=true;
+		$('#start-stop').removeClass('btn-primary').addClass('btn-default');
+		$('#start-stop').text('Stop');
+		let toHours=$("#hours").val()==undefined ? 0 : $("#hours").val() *1000*60*60;
+		let toMinutes=$("#minutes").val()==undefined ? 0 : $("#minutes").val() *1000*60;
+		let toSeconds=$("#seconds").val()==undefined ? 0 : $("#seconds").val() *1000;
+		countDownDate = new Date().getTime()+toHours+toMinutes+toSeconds;
+		interval=setInterval(updateTimer,500);
+	}
+});
+// Update the count down every 1 second
+function stop(){
+	started=false;
+	if(interval!=undefined) clearInterval(interval);
+	$('#start-stop').removeClass('btn-default').addClass('btn-primary');
+	$('#start-stop').text('Start');
+}
+
+function updateTimer(){
+	var now = new Date().getTime();
+	var distance = countDownDate - now;
+	
+	// If the count down is over, write some text 
+	if (distance<0){
+		$('#hours').val(0);
+		$('#minutes').val(0);
+		$('#seconds').val(0);
+		$('#alert').show();
+		stop();
+	}else{
+		$('#hours').val(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+		$('#minutes').val(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
+		$('#seconds').val(Math.floor((distance % (1000 * 60)) / 1000));
+	}
+}
+</script>
+</body>
+</html>
